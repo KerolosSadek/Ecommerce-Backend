@@ -8,7 +8,6 @@ const productSchema = mongoose.Schema({
     },
     category: {
         type: String,
-        ref: "Category",
         trim:true,
         required: true,
         ref:"cate"

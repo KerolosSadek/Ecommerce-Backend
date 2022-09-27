@@ -8,10 +8,11 @@ class User {
     static register = async (req, res) => {
         try {
             const user = new userModel(req.body)
+            const token = await user.generateToken()
             await user.save()
             res.status(200).send({
                 apiStatus: true,
-                data: user,
+                data: {user , token},
                 message: "User Added Successfully"
             })
         }
@@ -27,10 +28,9 @@ class User {
         try {
             const user = await userModel.login(
                 req.body.email, req.body.password)
-            const token = await user.generateToken()
             res.status(200).send({
                 apiStatus: true,
-                data: { user, token },
+                data: user,
                 message: "User Sign In Successfully"
             })
         }
