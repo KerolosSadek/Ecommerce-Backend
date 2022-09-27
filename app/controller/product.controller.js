@@ -56,6 +56,26 @@ class product {
             })
         }
     }
+    static findProducts = async (req, res) => {
+        try {
+            const category = await categoryModel.findOne({
+                name: req.params.name,
+            });
+            await category.populate("myProducts");
+            res.status(200).send({
+                apiStatus: true,
+                data: category,
+                message: "products Found"
+            })
+        } 
+        catch (e) {
+            res.status(500).send({
+                apiStatus: false,
+                data: e,
+                message: e.message
+            })
+        }
+    };
     static single = async(req,res) =>{
         try{
             const product = await productModel.findById(req.params.id)
@@ -110,7 +130,7 @@ class product {
     static editProduct = async(req, res) => {
         try{
             const myUpdates = Object.keys(req.body)
-            const allowedEdits = ["title", "description", "price", "quantity", "image"]
+            const allowedEdits = ["title", "content", "price","image"]
             const validEdits = myUpdates.every(
                 (update) => allowedEdits.includes(update)
                 )

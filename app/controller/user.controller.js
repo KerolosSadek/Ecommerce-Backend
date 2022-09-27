@@ -1,5 +1,6 @@
 const path = require("path")
 const userModel = require("../database/models/user")
+const cartModel = require("../database/models/cart")
 const fs = require('fs')
 
 class User {
@@ -207,51 +208,13 @@ class User {
     }
     static editAddress = async (req, res) => {
         try {
-            const addressIndex = req.user.addresses.findIndex(address => address._id == req.params.id)
-            req.user.addresses[addressIndex] = { ...req.body, _id: req.params.id }
+            const adress = req.user.addresses.findIndex(address => address._id == req.params.id)
+            req.user.addresses[adress] = { ...req.body, _id: req.params.id }
             await req.user.save()
             res.status(200).send({
                 apiStatus: true,
                 data: req.user,
-                message: "Your Address Added Successfully"
-            })
-        }
-        catch (e) {
-            res.status(500).send({
-                apiStatus: false,
-                data: e,
-                message: e.message
-            })
-        }
-    }
-    static deleteAddress = async (req, res) => {
-        try {
-            req.user.addresses = req.user.addresses.filter(
-                address => address._id == req.params.id
-            )
-            await req.user.save()
-            res.status(200).send({
-                apiStatus: true,
-                data: req.user,
-                message: "Your Address Deleted Successfully"
-            })
-        }
-        catch (e) {
-            res.status(500).send({
-                apiStatus: false,
-                data: e,
-                message: e.message
-            })
-        }
-    }
-    static record = async (req, res) => {
-        try {
-            req.user.balance += Number(req.body.balance)
-            await req.user.save();
-            res.status(200).send({
-                apiStatus: true,
-                data: req.user,
-                message: "Your Order recorded Successfully"
+                message: "Your Address Edited Successfully"
             })
         }
         catch (e) {
@@ -264,11 +227,21 @@ class User {
     }
     static pay = async (req, res) => {
         try {
-            req.body.products.forEach(product => { })
+            const cart = cartModel({...req.body, userId: req.user._id})
+            const process = {
+                processKind: 'pay',
+                value: cart.total,
+                cartId: cart._id,
+                date: Date.now()
+            }
+            req.user.process = req.user.process.concat(process)
+            await req.user.save()
+            await cart.save()
+
             res.status(200).send({
                 apiStatus: true,
                 data: req.user,
-                message: "Your paid Order Successfully"
+                message: "You Paid Your Order Successfully"
             })
         }
         catch (e) {
@@ -302,6 +275,11 @@ class User {
     static single = async (req, res) => {
         try {
             const user = await userModel.findById(req.params.id);
+            user.process.map(async action => {
+                if (action.processKind == 'pay') {
+                    process.cart = await cartModel.findById(process.cartId)
+                }
+            });
             if (!user) throw new Error("Invlid Id");
             res.status(200).send({
                 apiStatus: true,
@@ -337,7 +315,8 @@ class User {
         try {
             const user = await userModel.findById(req.params.id);
             if (req.body.status === "activate") user.status = true;
-            else user.status = false;
+            else 
+                user.status = false;
             await user.save();
             res.status(200).send({
                 apiStatus: true,

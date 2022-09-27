@@ -2,21 +2,17 @@ const mongoose = require("mongoose")
 const categorySchema = mongoose.Schema({
     name: {
         type:String, 
-        trim:true, 
+        trim:true,
+        minLength: 5,
+        maxLength: 15,
         required:true
     },
-    image: {
-        type:String, 
-        trim:true, 
-        default:"-"
-    }
-    
 })
 
 categorySchema.virtual("myProducts", {
-    ref:"Product",
-    localField: "_id",
-    foreignField:"categoryId"
+    ref:"Products",
+    localField: "name",
+    foreignField:"category"
 })
 
 const Category = mongoose.model("Category", categorySchema)

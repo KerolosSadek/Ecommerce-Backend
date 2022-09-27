@@ -63,12 +63,29 @@ const userSchema = mongoose.Schema({
             },
         },
     ],
-    process: {
-        type: String,
-        trim: true,
-        enum: ["pay", "withdraw"],
-        required: true,
-    },
+    process:[
+        {
+            processKind:{
+                type: String,
+                trim: true,
+                enum: ["pay", "withdraw"],
+                required: true,
+            },
+            value:{
+                type:Number,
+                required:true
+            },
+            cartId:{
+                type:mongoose.Schema.Types.ObjectId,
+                required:true,
+                ref:"cart"
+            },
+            date:{
+                type:Date,
+                required:true
+            }
+        }
+    ],
     tokens:[
         {
             token:{
