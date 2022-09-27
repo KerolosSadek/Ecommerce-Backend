@@ -39,7 +39,7 @@ const userSchema = mongoose.Schema({
         minLength: 5,
         maxLength: 100,
     },
-    userlevel: {
+    userLevel: {
         type: String,
         trim: true,
         enum: ["admin", "customer"],
@@ -68,11 +68,6 @@ const userSchema = mongoose.Schema({
         trim: true,
         enum: ["pay", "withdraw"],
         required: true,
-    },
-    balance: {
-        type: Number,
-        min: 0,
-        default:0
     },
     tokens:[
         {
@@ -116,7 +111,7 @@ const jwt = require("jsonwebtoken")
 userSchema.methods.generateToken = async function(){
     const user = this
     if(user.tokens.length==5) throw new Error("token Exdded")
-    const token = jwt.sign({_id:user._id} , "userData")
+    const token = jwt.sign({_id:user._id} , "userToken")
     user.tokens = user.tokens.concat({token})
     await user.save()
     return token

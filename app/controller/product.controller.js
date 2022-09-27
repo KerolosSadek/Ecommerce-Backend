@@ -5,7 +5,7 @@ class product {
 
     static add = async (req, res) => {
         try {
-            const products = new productModel(...req.body)
+            const products = new productModel(req.body)
             await products.save()
             res.status(200).send({
                 apiStatus: true,
@@ -26,14 +26,14 @@ class product {
             const ext = path.extname(req.file.originalname)
             fs.renameSync(req.file.path, `${req.file.path}${ext}`)
             let oldImg 
-            if(req.user.image)
-            oldImg =path.join(__dirname,"../", "public", req.user.image)
+            if(req.product.image)
+            oldImg =path.join(__dirname,"../", "public", req.product.image)
             else 
             oldImg=null
-            req.user.image = `${req.file.filename}${ext}`
+            req.product.image = `${req.file.filename}${ext}`
             await req.user.save()
             if(oldImg) fs.unlinkSync(oldImg)
-            res.send({user:req.user, b:req.body})
+            res.send({product:req.product, b:req.body})
             }
             catch(e){
             res.send(e)

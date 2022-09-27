@@ -4,11 +4,11 @@ const productSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    categoryId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Category", 
-        required: true
-    },
+    // categoryId: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Category", 
+    //     required: true
+    // },
     image: {
         type: String, 
         trim: true, 
@@ -19,7 +19,7 @@ const productSchema = mongoose.Schema({
         trim: true, 
         required: true
     },
-    description: {
+    content: {
         type: String, 
         trim: true, 
         required: true
@@ -29,12 +29,12 @@ const productSchema = mongoose.Schema({
         trim: true, 
         required: true
     },
-    Qty: {
+    qty: {
         type: Number
     },
-    created: {
+    Added: {
         type: Date, 
-        default: Date.now
+        default: Date.now()
     }
 },
     { timestamps: true }
