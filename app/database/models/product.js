@@ -3,7 +3,6 @@ const categoryModel = require("../models/category")
 const productSchema = mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        required:true,
         ref: "User"
     },
     category: {
@@ -34,7 +33,6 @@ const productSchema = mongoose.Schema({
     price: {
         type: Number, 
         trim: true, 
-        required: true
     },
 },
     { timestamps: true }
@@ -61,6 +59,12 @@ productSchema.methods.toJSON = function () {
     const product = this.toObject();
     delete product.__v;
     return product;
+}
+
+productSchema.methods.addPic = async function(file) {
+    const lastImage = this.image == 'imageProduct.jpg'? null : this.image
+    this.image = file.filename
+    if (lastImage) fs.unlinkSync(path.join(__dirname, '../../public', lastImage))
 }
 const Product = mongoose.model("Product", productSchema)
 module.exports = Product

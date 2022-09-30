@@ -41,7 +41,10 @@ class product {
     }
     static all = async (req, res) => {
         try {
-            const products = await productModel.find()
+            // const pageNum = req.query.pageNum
+            // const pageLimit = req.query.pageLimit || 7
+            // const count = await productModel.count()
+            const products = await productModel.find()  //.limit(pageLimit).skip(pageLimit*pageNum)
             res.status(200).send({
                 apiStatus: true,
                 data: products,

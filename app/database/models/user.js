@@ -44,6 +44,7 @@ const userSchema = mongoose.Schema({
         trim: true,
         enum: ["admin", "customer"],
         required: true,
+        default:"customer"
     },
     addresses: [
         {
@@ -62,29 +63,6 @@ const userSchema = mongoose.Schema({
                 required: true,
             },
         },
-    ],
-    process:[
-        {
-            processKind:{
-                type: String,
-                trim: true,
-                enum: ["pay", "withdraw"],
-                required: true,
-            },
-            value:{
-                type:Number,
-                required:true
-            },
-            cartId:{
-                type:mongoose.Schema.Types.ObjectId,
-                required:true,
-                ref:"cart"
-            },
-            date:{
-                type:Date,
-                required:true
-            }
-        }
     ],
     tokens:[
         {

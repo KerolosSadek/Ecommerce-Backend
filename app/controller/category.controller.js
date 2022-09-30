@@ -1,9 +1,24 @@
 const categoryModel = require("../database/models/category")
-const productModel = require("../database/models/product")
-
 class Category {
     //Admin
-
+    static add = async (req, res) => {
+        try {
+            const category = categoryModel(req.body)
+            await category.save()
+            res.status(200).send({
+                apiStatus: true,
+                data: category,
+                message: "Category Added Successfully"
+            })        
+        } 
+        catch(e) {
+            res.status(500).send({
+                apiStatus: false,
+                data: e,
+                message: e.message
+            })        
+        }
+    }
     static all = async(req,res) =>{
         try{
             const category = await categoryModel.find()
@@ -23,7 +38,7 @@ class Category {
     }
     static delete = async(req,res) =>{
         try{
-            const category = await productModel.findByIdAndDelete(req.params.id)
+            const category = await categoryModel.findByIdAndDelete(req.params.id)
             res.status(200).send({
                 apiStatus: true,
                 data: category,

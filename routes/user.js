@@ -8,11 +8,10 @@ router.post("/register" ,UserController.register)
 router.post("/login" ,UserController.login)
 router.post("/logout", auth, UserController.logout)
 router.post("/logoutAll", auth, UserController.logoutAll)
-router.patch("/editData",auth ,UserController.editMyData)
+router.put("/edit", auth,  UserController.editMyData);
 router.patch("/editPass/:id",auth , UserController.editPass)
 router.delete("/delMe", auth, UserController.delMe)
 router.get("/me", auth, UserController.me)
-router.patch("/changeStatus", auth, UserController.changeStatus)
 
 const multer  = require('multer')
 const upload = multer({ dest: 'public/' })

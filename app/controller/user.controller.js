@@ -28,9 +28,10 @@ class User {
         try {
             const user = await userModel.login(
                 req.body.email, req.body.password)
+                const token = await user.generateToken()
             res.status(200).send({
                 apiStatus: true,
-                data: user,
+                data: {user , token},
                 message: "User Sign In Successfully"
             })
         }
@@ -44,7 +45,7 @@ class User {
     }
     static logout = async (req, res) => {
         try {
-            req.user.tokens = req.tokens.filter(t => t.token != req.token)
+            req.user.tokens = req.user.tokens.filter(t => t.token != req.token)
             await req.user.save()
             res.status(200).send({
                 apiStatus: true,
@@ -82,18 +83,17 @@ class User {
     }
     static editMyData = async (req, res) => {
         try {
-            for (let single in req.body) {
-                if (single != "password" && req.body[single]) {
-                    req.user[single] = req.body[single]
+            for (let key in req.body) {
+                if (key != "password" && req.body[key]) {
+                    req.user[key] = req.body[key];
                 }
             }
-            await req.user.save()
             res.status(200).send({
                 apiStatus: true,
                 data: req.user,
                 message: "Your Data Edited Successfully"
             })
-        }
+        } 
         catch (e) {
             res.status(500).send({
                 apiStatus: false,
@@ -275,11 +275,6 @@ class User {
     static single = async (req, res) => {
         try {
             const user = await userModel.findById(req.params.id);
-            user.process.map(async action => {
-                if (action.processKind == 'pay') {
-                    process.cart = await cartModel.findById(process.cartId)
-                }
-            });
             if (!user) throw new Error("Invlid Id");
             res.status(200).send({
                 apiStatus: true,
